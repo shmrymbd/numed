@@ -241,7 +241,7 @@ def process_cmnd(some_string):
 
 
 
-def main():
+def mqtt_init():
 
 
     mqttc.tls_set('/etc/ssl/certs/ca-certificates.crt')
@@ -274,11 +274,12 @@ def cleanup(signum, frame):
 
     logging.info("RESTART. Exiting on signal " +str(signum))
     sys.exit(signum)
-    scheduler.shutdown()
 
 
 
 def main():
+
+    mqtt_init()
 
     #read hardware input
     scheduler.add_job(read_dht, 'cron', second='*/5') # every second
