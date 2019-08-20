@@ -21,7 +21,7 @@ MQTT_POWER = "stat/"+DEVICE_ID+"/POWER"
 MQTT_RESULT = "stat/"+DEVICE_ID+"/RESULT"
 mqtt_user = "lorafora"
 mqtt_pass = "foralora"
-relay_flag = 0
+
 
 
 import Adafruit_DHT
@@ -43,6 +43,10 @@ SSR_pin = 16 #GPIO_EN_1   SSR
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 GPIO.setup(SSR_pin, GPIO.OUT)
+
+#initiate relay 0
+GPIO.output(SSR_pin, 0)
+relay_flag = 0
 
 mqttc = mqtt.Client()
 
