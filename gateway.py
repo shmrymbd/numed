@@ -38,7 +38,7 @@ logging.basicConfig(level=logging.INFO,
 logging.getLogger('apscheduler').setLevel(logging.WARNING)
 
 DHT_pin = 17  # GPIO17 or other name GPIO0
-SSR_pin = 27 #GPIO_EN_1   SSR
+SSR_pin = 16 #GPIO_EN_1   SSR
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
