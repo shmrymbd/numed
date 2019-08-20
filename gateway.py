@@ -313,10 +313,10 @@ def main():
     mqtt_init()
 
     #read hardware input
-    scheduler.add_job(read_dht, 'cron', second='*/10') # every second
+    scheduler.add_job(read_dht, 'cron', minute='*') # every second
 
     #trigger_watchdog
-    scheduler.add_job(update_state, 'cron', minute='*')  # every second
+    scheduler.add_job(update_state, 'cron', minute='*/5')  # every second
 
 
     scheduler.start()
