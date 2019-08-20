@@ -2,8 +2,8 @@
 
 DEVICE_ID = "airctrl0005"
 
-MAX_VALUE = 20
-MIN_VALUE = 30
+MAX_VALUE = 60
+MIN_VALUE = 50
 
 from apscheduler.schedulers.background import BackgroundScheduler
 scheduler = BackgroundScheduler(timezone="Asia/Kuala_Lumpur")
@@ -46,9 +46,15 @@ GPIO.setup(SSR_pin, GPIO.OUT)
 
 mqttc = mqtt.Client()
 
+
+logging.info('Gateway service restarted')
+print('Gateway service restarted')
+
 def on_connect(mqttc, obj, flags, rc):
     print("rc: " + str(rc))
     print('MQTT service connected to broker')
+    logging.info("rc: " + str(rc))
+    logging.info('MQTT service connected to broker')
 
     ############################################################################
 
@@ -69,14 +75,17 @@ def on_publish(mqttc, obj, mid):
 def on_subscribe(mqttc, obj, mid, granted_qos):
     #pass
     print("Subscribed: " + str(mid) + " " + str(granted_qos))
+    logging.info("Subscribed: " + str(mid) + " " + str(granted_qos))
 
 def on_log(mqttc, obj, level, msg):
     #pass
     print(msg)
+    logging.info(msg)
 
 
 def on_handle_cmnd(mqttc, obj, msg):
     print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
+    logging.info(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
 
     some_string = str(msg.payload.decode("utf-8", "ignore"))
     process_cmnd(some_string)
@@ -90,6 +99,7 @@ def publish_event(topics, pub_str):
             mqttc.publish(topics, json.dumps(pub_str))
         except:
             print('Failed to publish to broker')
+            logging.info('Failed to publish to broker')
 
 def read_dht():
 
@@ -101,6 +111,7 @@ def read_dht():
 
         if humidity is not None and temperature is not None:
             print("Temp={0:0.1f}*C  Humidity={1:0.1f}%".format(temperature, humidity))
+            logging.info("Temp={0:0.1f}*C  Humidity={1:0.1f}%".format(temperature, humidity))
 
             # {"Time":"2019-08-20T18:20:50", "AM2301":{"Temperature":22.5, "Humidity":54.6}, "TempUnit":"C"}
             data = {
@@ -123,11 +134,13 @@ def read_dht():
 
         else:
             print("Failed to retrieve data from humidity sensor")
+            logging.info("Failed to retrieve data from humidity sensor")
 
 def on_relay():
     global relay_flag
     GPIO.output(SSR_pin, 1)
     print('Relay1 activate')
+    logging.info('Relay1 activate')
     relay_flag = 1
 
     data = {
@@ -137,12 +150,12 @@ def on_relay():
     publish_event(MQTT_RESULT,data)
 
 
-
 def off_relay():
     global relay_flag
 
     GPIO.output(SSR_pin, 0)
     print('Relay1 deactivate')
+    logging.info('Relay1 deactivate')
     relay_flag = 0
 
     data = {
@@ -202,9 +215,12 @@ def process_cmnd(some_string):
     code1 = b
     code2 = c
 
-    logging.debug('command: %s', command)
-    logging.debug('code1: %s', code1)
-    logging.debug('code2: %s', code2)
+    logging.info('command: %s', command)
+    logging.info('code1: %s', code1)
+    logging.info('code2: %s', code2)
+    print('command: %s', command)
+    print('code1: %s', code1)
+    print('code2: %s', code2)
 
     num = 0
 
@@ -212,6 +228,7 @@ def process_cmnd(some_string):
 
     if command == 'HEARTBEAT':
         logging.info('HEARTBEAT request via MQTT')
+        print('HEARTBEAT request via MQTT')
         update_state()
 
     #########################################################relay control
@@ -231,12 +248,16 @@ def process_cmnd(some_string):
     if command == 'RESET':
         logging.info('Python RESET command received')
         logging.info('reset gateway.py')
+        print('Python RESET command received')
+        print('reset gateway.py')
+
         os.kill(os.getpid(), signal.SIGINT)
 
     ###################################################################
 
     if command == 'REBOOT':
         logging.info('OS REBOOT command received')
+        print('OS REBOOT command received')
         os.system('reboot')
 
     ###################################################################
@@ -273,11 +294,14 @@ def cleanup(signum, frame):
     try:
         mqttc.publish(MQTT_LWT, 'Offline', qos= 2, retain=True)
         logging.info("Disconnecting from broker properly")
+        print("Disconnecting from broker properly")
         mqttc.disconnect()
     except:
         logging.info("No broker?")
+        print("No broker?")
 
     logging.info("RESTART. Exiting on signal " +str(signum))
+    print("RESTART. Exiting on signal " + str(signum))
     sys.exit(signum)
 
 
