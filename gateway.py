@@ -29,6 +29,14 @@ DHT_sensor = Adafruit_DHT.DHT22
 
 import RPi.GPIO as GPIO
 
+logging.basicConfig(level=logging.INFO,
+                        format='%(asctime)s %(levelname)s: %(message)s',
+                        datefmt='%Y-%m-%d %I:%M:%S %p',
+                        filename='service.log'
+                        )
+
+logging.getLogger('apscheduler').setLevel(logging.WARNING)
+
 DHT_pin = 17  # GPIO17 or other name GPIO0
 SSR_pin = 27 #GPIO_EN_1   SSR
 
