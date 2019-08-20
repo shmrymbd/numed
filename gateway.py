@@ -113,13 +113,15 @@ def read_dht():
             print("Temp={0:0.1f}*C  Humidity={1:0.1f}%".format(temperature, humidity))
             logging.info("Temp={0:0.1f}*C  Humidity={1:0.1f}%".format(temperature, humidity))
 
+
+            #round(a, 2)
             # {"Time":"2019-08-20T18:20:50", "AM2301":{"Temperature":22.5, "Humidity":54.6}, "TempUnit":"C"}
             data = {
 
                 "Time": format_iso_now,
                 "AM2301": {
-                    "Temperature": temperature,
-                    "Humidity": humidity
+                    "Temperature": round(temperature,2),
+                    "Humidity": round(humidity,2)
                 },
                 "TempUnit": "C"
             }
