@@ -2,7 +2,7 @@
 
 DEVICE_ID = "airctrl0005"
 
-MAX_VALUE = 60
+MAX_VALUE = 40
 MIN_VALUE = 50
 
 from apscheduler.schedulers.background import BackgroundScheduler
