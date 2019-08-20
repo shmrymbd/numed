@@ -13,7 +13,7 @@ pkill -f 'python3 gateway.py'
 
 
 cd /home/pi/
-chown -R pi:pi gateway_boardV2/
+chown -R pi:pi numed/
 
 sleep 2
 cd /home/pi/numed/
