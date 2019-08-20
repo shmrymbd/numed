@@ -75,8 +75,6 @@ def on_handle_cmnd(mqttc, obj, msg):
     process_cmnd(some_string)
 
 
-def process_cmnd(k):
-
 
 def publish_event(topics, pub_str):
 

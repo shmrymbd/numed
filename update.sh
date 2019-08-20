@@ -5,7 +5,7 @@ mv launcher.sh launcher.sh.bak
 
 git fetch --all
 git reset --hard origin/master
-#git pull
+
 #comment during testing
 pip3 install -r requirements.txt
 sleep 2
