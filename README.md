@@ -1,4 +1,4 @@
-# gateway_boardV2
+# numed
 
-pre-release for banana-pi M64
+pre-release for raspberry pi
 update with gui logging
