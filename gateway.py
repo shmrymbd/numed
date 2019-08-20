@@ -10,7 +10,6 @@ scheduler = BackgroundScheduler(timezone="Asia/Kuala_Lumpur")
 import datetime, os, signal, sys
 import logging,time,json
 import paho.mqtt.client as mqtt
-import ssl
 from uptime import uptime
 
 #tele/airctrl0004/SENSOR
@@ -283,7 +282,7 @@ def main():
     scheduler.add_job(read_dht, 'cron', second='*/5') # every second
 
     #trigger_watchdog
-    scheduler.add_job(update_state(), 'cron', second='*/5')  # every second
+    scheduler.add_job(update_state, 'cron', second='*/5')  # every second
 
 
     scheduler.start()
