@@ -242,7 +242,7 @@ def process_cmnd(some_string):
 def mqtt_init():
 
 
-    mqttc.tls_set('/etc/ssl/certs/ca-certificates.crt')
+    # mqttc.tls_set('/etc/ssl/certs/ca-certificates.crt')
 
     mqttc.will_set(MQTT_LWT, 'Offline', qos= 2, retain=True) #Put call to will_set before client.connect.
     mqttc.username_pw_set(mqtt_user, mqtt_pass)
