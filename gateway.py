@@ -269,6 +269,11 @@ def process_cmnd(some_string):
 
     ###################################################################
 
+
+    if command == 'GW_UPDATE':
+        logging.info('GW_UPDATE command received')
+        os.system('/home/pi/numed/update.sh >/dev/null')
+
     else:
         pass
 
@@ -318,10 +323,10 @@ def main():
     mqtt_init()
 
     #read hardware input
-    scheduler.add_job(read_dht, 'cron', minute='*') # every second
+    scheduler.add_job(read_dht, 'cron', minute='*/5') # every second
 
     #trigger_watchdog
-    scheduler.add_job(update_state, 'cron', minute='*/5')  # every second
+    scheduler.add_job(update_state, 'cron', minute='*/10')  # every second
 
 
     scheduler.start()
