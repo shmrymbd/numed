@@ -114,34 +114,34 @@ def read_dht():
         humidity, temperature = Adafruit_DHT.read_retry(DHT_sensor, DHT_pin)
 
         if humidity is not None and temperature is not None:
-            if humidity
-            print("Temp={0:0.1f}*C  Humidity={1:0.1f}%".format(temperature, humidity))
-            logging.info("Temp={0:0.1f}*C  Humidity={1:0.1f}%".format(temperature, humidity))
+            if 10 < humidity < 100 and 5 < temperature < 60:
+                print("Temp={0:0.1f}*C  Humidity={1:0.1f}%".format(temperature, humidity))
+                logging.info("Temp={0:0.1f}*C  Humidity={1:0.1f}%".format(temperature, humidity))
 
 
-            #round(a, 2)
-            # {"Time":"2019-08-20T18:20:50", "AM2301":{"Temperature":22.5, "Humidity":54.6}, "TempUnit":"C"}
-            data = {
+                #round(a, 2)
+                # {"Time":"2019-08-20T18:20:50", "AM2301":{"Temperature":22.5, "Humidity":54.6}, "TempUnit":"C"}
+                data = {
 
-                "Time": format_iso_now,
-                "AM2301": {
-                    "Temperature": round(temperature,2),
-                    "Humidity": round(humidity,2)
-                },
-                "TempUnit": "C"
-            }
+                    "Time": format_iso_now,
+                    "AM2301": {
+                        "Temperature": round(temperature,2),
+                        "Humidity": round(humidity,2)
+                    },
+                    "TempUnit": "C"
+                }
 
-            publish_event(MQTT_TOPIC,data)
+                publish_event(MQTT_TOPIC,data)
 
-            if humidity >= MAX_VALUE and relay_flag == 0:
-                on_relay()
+                if humidity >= MAX_VALUE and relay_flag == 0:
+                    on_relay()
 
-            if humidity <= MIN_VALUE and relay_flag == 1:
-                off_relay()
+                if humidity <= MIN_VALUE and relay_flag == 1:
+                    off_relay()
 
-        else:
-            print("Failed to retrieve data from humidity sensor")
-            logging.info("Failed to retrieve data from humidity sensor")
+            else:
+                print("Failed to retrieve data from humidity sensor")
+                logging.info("Failed to retrieve data from humidity sensor")
 
 def on_relay():
     global relay_flag
