@@ -44,7 +44,7 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 GPIO.setup(SSR_pin, GPIO.OUT)
 
-#initiate relay 0
+#initiate off relay 0
 GPIO.output(SSR_pin, 1)
 relay_flag = 0
 
@@ -132,10 +132,10 @@ def read_dht():
 
             publish_event(MQTT_TOPIC,data)
 
-            if humidity > MAX_VALUE and relay_flag == 0:
+            if humidity >= MAX_VALUE and relay_flag == 0:
                 on_relay()
 
-            elif humidity > MIN_VALUE and relay_flag == 1:
+            if humidity >= MIN_VALUE and relay_flag == 1:
                 off_relay()
 
         else:
