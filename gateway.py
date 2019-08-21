@@ -132,10 +132,10 @@ def read_dht():
 
             publish_event(MQTT_TOPIC,data)
 
-            if humidity > MAX_VALUE:
+            if humidity > MAX_VALUE and relay_flag == 0:
                 on_relay()
 
-            elif humidity > MIN_VALUE:
+            elif humidity > MIN_VALUE and relay_flag == 1:
                 off_relay()
 
         else:
@@ -144,6 +144,7 @@ def read_dht():
 
 def on_relay():
     global relay_flag
+
     GPIO.output(SSR_pin, 1)
     print('Relay1 activate')
     logging.info('Relay1 activate')
