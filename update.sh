@@ -2,6 +2,7 @@
 
 cd /home/pi/numed
 mv launcher.sh launcher.sh.bak
+pkill -f 'python3 gateway.py'
 
 git fetch --all
 git reset --hard origin/master
