@@ -2,8 +2,8 @@
 
 DEVICE_ID = "airctrl0005"
 
-MAX_VALUE = 40
-MIN_VALUE = 50
+MAX_VALUE = 50
+MIN_VALUE = 40
 
 from apscheduler.schedulers.background import BackgroundScheduler
 scheduler = BackgroundScheduler(timezone="Asia/Kuala_Lumpur")
