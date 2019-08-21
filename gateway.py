@@ -247,9 +247,14 @@ def process_cmnd(some_string):
         if code1 == 'OFF':
             off_relay()
         if code1 == "TOGGLE":
-            on_relay()
-            time.sleep(1)
-            off_relay()
+            if relay_flag == 1:
+                off_relay()
+            if relay_flag == 0:
+                on_relay()
+        else:
+            pass
+
+
 
 #################################
     #command for reset python gateway.py OR restart pi
