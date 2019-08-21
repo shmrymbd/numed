@@ -110,7 +110,7 @@ def read_dht():
     now = datetime.datetime.now()
     format_iso_now = now.isoformat()
 
-    while True:
+    try:
         humidity, temperature = Adafruit_DHT.read_retry(DHT_sensor, DHT_pin)
 
         if humidity is not None and temperature is not None:
@@ -142,6 +142,10 @@ def read_dht():
             else:
                 print("Failed to retrieve data from humidity sensor")
                 logging.info("Failed to retrieve data from humidity sensor")
+
+    except:
+        print("Failed to retrieve data from humidity sensor")
+        logging.info("Failed to retrieve data from humidity sensor")
 
 def on_relay():
     global relay_flag
