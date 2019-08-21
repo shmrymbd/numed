@@ -114,6 +114,7 @@ def read_dht():
         humidity, temperature = Adafruit_DHT.read_retry(DHT_sensor, DHT_pin)
 
         if humidity is not None and temperature is not None:
+            if humidity
             print("Temp={0:0.1f}*C  Humidity={1:0.1f}%".format(temperature, humidity))
             logging.info("Temp={0:0.1f}*C  Humidity={1:0.1f}%".format(temperature, humidity))
 
@@ -132,10 +133,10 @@ def read_dht():
 
             publish_event(MQTT_TOPIC,data)
 
-            if humidity > MAX_VALUE and relay_flag == 0:
+            if humidity >= MAX_VALUE and relay_flag == 0:
                 on_relay()
 
-            if humidity < MIN_VALUE and relay_flag == 1:
+            if humidity <= MIN_VALUE and relay_flag == 1:
                 off_relay()
 
         else:
