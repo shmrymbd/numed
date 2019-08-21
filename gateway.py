@@ -132,10 +132,10 @@ def read_dht():
 
             publish_event(MQTT_TOPIC,data)
 
-            if humidity >= MAX_VALUE and relay_flag == 0:
+            if humidity > MAX_VALUE and relay_flag == 0:
                 on_relay()
 
-            if humidity >= MIN_VALUE and relay_flag == 1:
+            if humidity < MIN_VALUE and relay_flag == 1:
                 off_relay()
 
         else:
