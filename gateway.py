@@ -45,7 +45,7 @@ GPIO.setwarnings(False)
 GPIO.setup(SSR_pin, GPIO.OUT)
 
 #initiate relay 0
-GPIO.output(SSR_pin, 0)
+GPIO.output(SSR_pin, 1)
 relay_flag = 0
 
 mqttc = mqtt.Client()
@@ -145,7 +145,7 @@ def read_dht():
 def on_relay():
     global relay_flag
 
-    GPIO.output(SSR_pin, 1)
+    GPIO.output(SSR_pin, 0)
     print('Relay1 activate')
     logging.info('Relay1 activate')
     relay_flag = 1
@@ -160,7 +160,7 @@ def on_relay():
 def off_relay():
     global relay_flag
 
-    GPIO.output(SSR_pin, 0)
+    GPIO.output(SSR_pin, 1)
     print('Relay1 deactivate')
     logging.info('Relay1 deactivate')
     relay_flag = 0
