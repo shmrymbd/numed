@@ -162,7 +162,6 @@ def read_dht():
                 if humidity <= MIN_VALUE and relay_flag == 1:
                     off_relay()
 
-
                 update_state()
 
             else:
