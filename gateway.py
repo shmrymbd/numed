@@ -41,7 +41,6 @@ print(MIN_VALUE)
 logging.info(CAL_VALUE)
 print(CAL_VALUE)
 
-
 #APSCHEDULER
 from apscheduler.schedulers.background import BackgroundScheduler
 scheduler = BackgroundScheduler(timezone="Asia/Kuala_Lumpur")
