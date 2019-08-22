@@ -3,6 +3,21 @@
 import datetime, os, signal, sys, time,json
 from uptime import uptime
 
+#LOGGING SETUP
+import logging
+logging.basicConfig(level=logging.INFO,
+                        format='%(asctime)s %(levelname)s: %(message)s',
+                        datefmt='%Y-%m-%d %I:%M:%S %p',
+                        filename='service.log'
+                        )
+logging.getLogger('apscheduler').setLevel(logging.WARNING)
+
+
+#initiate start
+logging.info('Gateway service restarted')
+print('Gateway service restarted')
+
+
 #CONFIGPARSER
 CONFIGINI = 'config.ini'
 try:
@@ -18,6 +33,14 @@ DEVICE_ID = config.get('attributes', 'device_id')
 MAX_VALUE = int(config.get('setup', 'hum_max'))
 MIN_VALUE = int(config.get('setup', 'hum_min'))
 CAL_VALUE = int(config.get('setup', 'hum_cal'))
+
+logging.info(MAX_VALUE)
+print(MAX_VALUE)
+logging.info(MIN_VALUE)
+print(MIN_VALUE)
+logging.info(CAL_VALUE)
+print(CAL_VALUE)
+
 
 #APSCHEDULER
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -51,19 +74,7 @@ GPIO.setup(SSR_pin, GPIO.OUT)
 GPIO.output(SSR_pin, 1)
 relay_flag = 0
 
-#LOGGING SETUP
-import logging
-logging.basicConfig(level=logging.INFO,
-                        format='%(asctime)s %(levelname)s: %(message)s',
-                        datefmt='%Y-%m-%d %I:%M:%S %p',
-                        filename='service.log'
-                        )
-logging.getLogger('apscheduler').setLevel(logging.WARNING)
 
-
-#initiate start
-logging.info('Gateway service restarted')
-print('Gateway service restarted')
 
 def on_connect(mqttc, obj, flags, rc):
     print("rc: " + str(rc))
