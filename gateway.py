@@ -4,7 +4,7 @@ import datetime, os, signal, sys, time,json
 from uptime import uptime
 
 #CONFIGPARSER
-CONFIGINI = 'configfile.ini'
+CONFIGINI = 'config.ini'
 try:
     from configparser import ConfigParser
 except ImportError:
@@ -146,12 +146,14 @@ def read_dht():
                 }
 
                 publish_event(MQTT_TOPIC,data)
-
                 if humidity >= MAX_VALUE and relay_flag == 0:
                     on_relay()
 
                 if humidity <= MIN_VALUE and relay_flag == 1:
                     off_relay()
+
+
+                update_state()
 
             else:
                 print("Failed to retrieve data from humidity sensor")
@@ -201,22 +203,14 @@ def update_state():
         "Uptime": uptime(),
         "Vcc": 3.208,
         "POWER": pin_status(),
-        "Wifi":{
-            "AP": 1,
-            "SSID":"loranet",
-            "RSSI": 22,
-            "APMac": "EC:08:6B:73:33:DC"
-        }
     }
 
 def pin_status():
 
     if relay_flag == 1:
         status = "ON"
-
     else:
         status = "OFF"
-
     return status
 
 def process_cmnd(some_string):
