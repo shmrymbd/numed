@@ -342,9 +342,9 @@ def main():
 
     mqtt_init()
     #read hardware input
-    scheduler.add_job(read_dht, 'interval', minutes=5) # every second
+    scheduler.add_job(read_dht, 'interval', minutes=1) # every second
     #trigger_watchdog
-    scheduler.add_job(update_state, 'interval', minutes=5)  # every second
+    # scheduler.add_job(update_state, 'interval', minutes=5)  # every second
     scheduler.start()
     # start_watchdog()
 
