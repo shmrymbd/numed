@@ -1,17 +1,30 @@
 #!/usr/bin/python
 
-DEVICE_ID = "airctrl0005"
-
-MAX_VALUE = 50
-MIN_VALUE = 40
-
-from apscheduler.schedulers.background import BackgroundScheduler
-scheduler = BackgroundScheduler(timezone="Asia/Kuala_Lumpur")
-import datetime, os, signal, sys
-import logging,time,json
-import paho.mqtt.client as mqtt
+import datetime, os, signal, sys, time,json
 from uptime import uptime
 
+#CONFIGPARSER
+CONFIGINI = 'configfile.ini'
+try:
+    from configparser import ConfigParser
+except ImportError:
+    from ConfigParser import ConfigParser  # ver. < 3.0
+# instantiate
+config = ConfigParser()
+# parse existing file
+config.read(CONFIGINI)
+
+DEVICE_ID = config.get('attributes', 'device_id')
+MAX_VALUE = int(config.get('setup', 'hum_max'))
+MIN_VALUE = int(config.get('setup', 'hum_min'))
+CAL_VALUE = int(config.get('setup', 'hum_cal'))
+
+#APSCHEDULER
+from apscheduler.schedulers.background import BackgroundScheduler
+scheduler = BackgroundScheduler(timezone="Asia/Kuala_Lumpur")
+
+#MQTT SERVICE
+import paho.mqtt.client as mqtt
 #tele/airctrl0004/SENSOR
 MQTT_TOPIC = "tele/"+DEVICE_ID+"/SENSOR"
 MQTT_LWT = "tele/"+DEVICE_ID+"/LWT"
@@ -21,36 +34,34 @@ MQTT_POWER = "stat/"+DEVICE_ID+"/POWER"
 MQTT_RESULT = "stat/"+DEVICE_ID+"/RESULT"
 mqtt_user = "lorafora"
 mqtt_pass = "foralora"
+mqttc = mqtt.Client()
 
-
-
+#ADAFRUIT DHT
 import Adafruit_DHT
 DHT_sensor = Adafruit_DHT.DHT22
 
+#GPIO
 import RPi.GPIO as GPIO
+DHT_pin = 17  # GPIO17 or other name GPIO0
+SSR_pin = 16 #GPIO_EN_1   SSR
+GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+GPIO.setup(SSR_pin, GPIO.OUT)
+#initiate off relay 0
+GPIO.output(SSR_pin, 1)
+relay_flag = 0
 
+#LOGGING SETUP
+import logging
 logging.basicConfig(level=logging.INFO,
                         format='%(asctime)s %(levelname)s: %(message)s',
                         datefmt='%Y-%m-%d %I:%M:%S %p',
                         filename='service.log'
                         )
-
 logging.getLogger('apscheduler').setLevel(logging.WARNING)
 
-DHT_pin = 17  # GPIO17 or other name GPIO0
-SSR_pin = 16 #GPIO_EN_1   SSR
 
-GPIO.setmode(GPIO.BCM)
-GPIO.setwarnings(False)
-GPIO.setup(SSR_pin, GPIO.OUT)
-
-#initiate off relay 0
-GPIO.output(SSR_pin, 1)
-relay_flag = 0
-
-mqttc = mqtt.Client()
-
-
+#initiate start
 logging.info('Gateway service restarted')
 print('Gateway service restarted')
 
@@ -95,7 +106,6 @@ def on_handle_cmnd(mqttc, obj, msg):
     process_cmnd(some_string)
 
 
-
 def publish_event(topics, pub_str):
 
     if pub_str != {}:
@@ -114,7 +124,11 @@ def read_dht():
         humidity, temperature = Adafruit_DHT.read_retry(DHT_sensor, DHT_pin)
 
         if humidity is not None and temperature is not None:
-            if 10 < humidity < 100 and 5 < temperature < 60:
+            if 20 < humidity < 95  and 10 < temperature < 60:
+
+                #calibration
+                humidity = humidity + CAL_VALUE
+
                 print("Temp={0:0.1f}*C  Humidity={1:0.1f}%".format(temperature, humidity))
                 logging.info("Temp={0:0.1f}*C  Humidity={1:0.1f}%".format(temperature, humidity))
 
@@ -179,10 +193,8 @@ def off_relay():
 def update_state():
     #{"Time": "2019-08-20T19:08:23", "Uptime": 1181, "Vcc": 3.208, "POWER": "ON",
     # "Wifi": {"AP": 1, "SSID": "loranet", "RSSI": 22, "APMac": "EC:08:6B:73:33:DC"}}
-
     now = datetime.datetime.now()
     format_iso_now = now.isoformat()
-
 
     data = {
         "Time": format_iso_now,
@@ -288,12 +300,8 @@ def process_cmnd(some_string):
         pass
 
 
-
 def mqtt_init():
-
-
     # mqttc.tls_set('/etc/ssl/certs/ca-certificates.crt')
-
     mqttc.will_set(MQTT_LWT, 'Offline', qos= 2, retain=True) #Put call to will_set before client.connect.
     mqttc.username_pw_set(mqtt_user, mqtt_pass)
     mqttc.connect("broker.loranet.my", 1883,60)   #client.connect
@@ -327,20 +335,14 @@ def cleanup(signum, frame):
     sys.exit(signum)
 
 
-
 def main():
 
     mqtt_init()
-
     #read hardware input
-    scheduler.add_job(read_dht, 'interval', minutes=1) # every second
-
+    scheduler.add_job(read_dht, 'interval', minutes=5) # every second
     #trigger_watchdog
     scheduler.add_job(update_state, 'interval', minutes=5)  # every second
-
-
     scheduler.start()
-
     # start_watchdog()
 
     while True:
