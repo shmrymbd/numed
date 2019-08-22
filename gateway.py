@@ -137,12 +137,15 @@ def read_dht():
 
         if humidity is not None and temperature is not None:
 
-            print(humidity,temperature,relay_flag)
+            print("real humidity: " +str(humidity))
+            print(temperature,relay_flag)
 
             if 20 < humidity < 95  and 10 < temperature < 60:
 
                 #calibration
                 humidity = humidity + CAL_VALUE
+
+                print("new humidity: " +str(humidity))
 
                 print("Temp={0:0.1f}*C  Humidity={1:0.1f}%".format(temperature, humidity))
                 logging.info("Temp={0:0.1f}*C  Humidity={1:0.1f}%".format(temperature, humidity))
