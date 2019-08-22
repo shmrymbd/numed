@@ -127,6 +127,8 @@ def publish_event(topics, pub_str):
 
 def read_dht():
 
+    global relay_flag
+
     now = datetime.datetime.now()
     format_iso_now = now.isoformat()
 
@@ -134,6 +136,9 @@ def read_dht():
         humidity, temperature = Adafruit_DHT.read_retry(DHT_sensor, DHT_pin)
 
         if humidity is not None and temperature is not None:
+
+            print(humidity,temperature,relay_flag)
+
             if 20 < humidity < 95  and 10 < temperature < 60:
 
                 #calibration
